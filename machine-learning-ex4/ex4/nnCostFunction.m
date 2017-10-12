@@ -61,15 +61,20 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-z1 = ([ones(m, 1) X] * Theta1');
-z2 = ([ones(m, 1) X] * Theta2');
-h1 = sigmoid(z1);
-h2 = sigmoid(z2);
+a1 = [ones(m, 1) X];
+
+z2 = (a1 * Theta1');
+a2 = [ones(m, 1) sigmoid(z2)];
+
+z3 = (a2 * Theta2');
+a3 = sigmoid(z3);
+hx = a3;
+
+NUMBERS = [1:num_labels]';
 
 bySamplesSum = 0;
-NUMBERS = [1:num_labels]';
 for i = 1:m
-  hx = h2(i,:);
+  hx = a3(i,:);
   yActual = (NUMBERS == y(i));
   
   bySamplesSum += -yActual'*log(hx')-(1-yActual')*log(1-hx');
@@ -80,27 +85,21 @@ J = 1/m*bySamplesSum;
 ThetaSum = (sum(sum(Theta1(:,2:end).^2)))+(sum(sum(Theta2(:,2:end).^2)));
 J = J + ((lambda/(2*m))*ThetaSum);
 
-%Gradients calulation
-for i = 1:m
-  delta3 = (h2(i,:) - (Numbers==y(i)));
-  delta2 = Theta2'*delta3.*sigmoidGradient(z2);
-  absoluteCorrection
-  correction
+
+%Gradients_calculation**********************************************************
+for i=1:m
+  a1 = [ones(1,1) X(i,:)]';
   
+  z2 = Theta1*a1;
+  a2 = [ones(1,1); sigmoid(z2)];
+  
+  z3 = Theta2*a2;
+  a3 = [sigmoid(z3)];  
+  hx=a3;
+  
+  delta3 = hx - (NUMBERS==y(i));
+  delta2 = Theta2'*delta3.*sigmoidGradient(z2);
 endfor
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 % -------------------------------------------------------------
