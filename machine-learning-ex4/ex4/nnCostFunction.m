@@ -86,7 +86,7 @@ ThetaSum = (sum(sum(Theta1(:,2:end).^2)))+(sum(sum(Theta2(:,2:end).^2)));
 J = J + ((lambda/(2*m))*ThetaSum);
 
 
-%Gradients_calculation**********************************************************
+%********************Gradients_calculation*************************************%
 for i=1:m
   a1 = [ones(1,1) X(i,:)]';
   
@@ -95,13 +95,19 @@ for i=1:m
   
   z3 = Theta2*a2;
   a3 = [sigmoid(z3)];  
-  hx=a3;
+  hx = a3;
   
   delta3 = hx - (NUMBERS==y(i));
-  delta2 = Theta2'*delta3.*sigmoidGradient(z2);
+  delta2 = ((Theta2'(2:end,:))*delta3).*sigmoidGradient(z2);
+  
+  Theta1_grad = Theta1_grad + delta2*a1';
+  Theta2_grad = Theta2_grad + delta3*a2';
 endfor
 
-
+Theta1_grad /= m;
+Theta2_grad /= m;
+Theta1_grad += (lambda/m) * [zeros(size(Theta1, 1), 1) Theta1(:,2:end)];
+Theta2_grad += (lambda/m) * [zeros(size(Theta2, 1), 1) Theta2(:,2:end)];
 % -------------------------------------------------------------
 
 % =========================================================================
