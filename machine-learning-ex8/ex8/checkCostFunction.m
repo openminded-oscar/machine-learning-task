@@ -28,12 +28,11 @@ Theta = randn(size(Theta_t));
 num_users = size(Y, 2);
 num_movies = size(Y, 1);
 num_features = size(Theta_t, 2);
-
 numgrad = computeNumericalGradient( ...
                 @(t) cofiCostFunc(t, Y, R, num_users, num_movies, ...
                                 num_features, lambda), [X(:); Theta(:)]);
 
-[cost, grad] = cofiCostFunc([X(:); Theta(:)],  Y, R, num_users, ...
+[cost, grad] =       cofiCostFunc([X(:); Theta(:)],  Y, R, num_users, ...
                           num_movies, num_features, lambda);
 
 disp([numgrad grad]);

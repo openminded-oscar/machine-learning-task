@@ -39,20 +39,36 @@ Theta_grad = zeros(size(Theta));
 %
 
 J = (1/2)*sum(sum((X*Theta'.*R-Y).^2));
+J += lambda/2*(sum(sum(Theta.^2)) + sum(sum(X.^2)));
+
+%Diff_for_film_and_user = X*Theta'.*R-Y;
+% 5 movies, 4 users
+%X_grad = sum(Diff_for_film_and_user);
+
+for i = 1:num_movies
+  % select users, that watched that movie
+  idx = find(R(i, :)==1);
+  % select preferences for users watched that movie
+  Thetatemp = Theta(idx, :);
+  % select actual for users watched that movie
+  Ytemp = Y(i, idx);
+  X_grad(i, :) = (X(i, :) * Thetatemp' - Ytemp) * Thetatemp;
+  
+  X_grad(i, :) += X(i, :)*lambda;
+endfor
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+for i = 1:num_users
+  % select movies, watched by user
+  idx = find(R(:, i)==1);
+  % coefficients, related to movie, watched by user 
+  Xtemp = X(idx, :);
+  Ytemp = Y(idx, i);
+  
+  Theta_grad(i, :) = (Xtemp * Theta(i, :)' - Ytemp)' * Xtemp;
+  
+  Theta_grad(i, :) += Theta(i, :)*lambda;
+endfor
 % =============================================================
 
 grad = [X_grad(:); Theta_grad(:)];
