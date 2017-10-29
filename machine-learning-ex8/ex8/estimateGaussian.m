@@ -20,16 +20,11 @@ sigma2 = zeros(n, 1);
 %               the data for the i-th feature and sigma2(i)
 %               should contain variance of the i-th feature.
 %
+onesToMultiply = ones(size(X, 1), 1);
+mu = (1/m)*(X'*onesToMultiply);
 
-
-
-
-
-
-
-
-
-
+squares = (X' - mu).^2;
+sigma2 = (1/m)*sum(squares, 2);
 % =============================================================
 
 
